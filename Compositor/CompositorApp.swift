@@ -95,6 +95,16 @@ struct CompositorApp: App {
                     CommandGroup(after: .appInfo) {
                         Button("Check for Updates…") { applicationDelegate.updater.checkForUpdates(nil) }
                     }
+                    CommandGroup(after: .appSettings) {
+                        Menu("Agent Connection") {
+                            Toggle("Enable MCP", isOn: Binding(get: { applicationDelegate.automation.isEnabled }, set: { enabled in
+                                if enabled { applicationDelegate.automation.start() } else { applicationDelegate.automation.stop() }
+                            }))
+                            Text(applicationDelegate.automation.status)
+                            Button("Copy MCP Configuration") { applicationDelegate.automation.copyConfiguration() }
+                                .disabled(!applicationDelegate.automation.isEnabled)
+                        }
+                    }
                     CommandGroup(after: .toolbar) {
                         // With a dialog's preview open (Export JPEG), these zoom that preview rather than the canvas.
                         Button("Fit Canvas") {
